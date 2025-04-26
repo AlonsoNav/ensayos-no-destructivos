@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class MenuOption : MonoBehaviour
 {
-    public string optionName;
+    public string sceneToLoad;
 
     void OnEnable()
     {
@@ -22,6 +23,14 @@ public class MenuOption : MonoBehaviour
 
     void OnSelect(SelectEnterEventArgs args)
     {
-        Debug.Log($"Seleccionaste la opción: {optionName}");
+        Debug.Log($"Cargando escena: {sceneToLoad}");
+        if (!string.IsNullOrEmpty(sceneToLoad))
+        {
+            SceneManager.LoadScene(sceneToLoad);
+        }
+        else
+        {
+            Debug.LogWarning("No se asignó el nombre de la escena en el inspector.");
+        }
     }
 }

@@ -3,7 +3,7 @@
 [ExecuteAlways] // esto permite que se ejecute en modo edición
 public class CircularMenuLayout : MonoBehaviour
 {
-    public float radius = 1.5f;
+    public float radius = 2.5f;
     public float startAngle = -30f;
     public float endAngle = 30f;
 
