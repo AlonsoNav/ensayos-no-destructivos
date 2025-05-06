@@ -19,6 +19,9 @@ public class SocketSpriteColorYNumero : MonoBehaviour
 
     [HideInInspector] public bool estaActivado = false; // Estado visible del círculo
 
+    [Header("Número a Mostrar")]
+    public int numeroManual = 25; // El número que se mostrará en lugar del aleatorio
+
     private Coroutine desactivarCoroutine;
 
     private void OnEnable()
@@ -33,7 +36,24 @@ public class SocketSpriteColorYNumero : MonoBehaviour
         socket.selectExited.RemoveListener(OnObjectRemoved);
     }
 
+    // Llamado cuando el objeto es colocado en el socket
     private void OnObjectPlaced(SelectEnterEventArgs args)
+    {
+        ActivarCirculo();
+    }
+
+    // Llamado cuando el objeto es retirado del socket
+    private void OnObjectRemoved(SelectExitEventArgs args)
+    {
+        if (desactivarCoroutine != null)
+            StopCoroutine(desactivarCoroutine);
+
+        desactivarCoroutine = StartCoroutine(EsperarAntesDeOcultar());
+    }
+
+    // Activar manualmente el círculo
+    [ContextMenu("Activar Circulo")]
+    public void ActivarCirculo()
     {
         if (desactivarCoroutine != null)
             StopCoroutine(desactivarCoroutine);
@@ -45,22 +65,17 @@ public class SocketSpriteColorYNumero : MonoBehaviour
 
         if (textDisplay != null)
         {
-            int numeroAleatorio = Random.Range(0, 101);
-            textDisplay.text = numeroAleatorio.ToString();
+            // Mostrar el número manualmente en lugar de uno aleatorio
+            textDisplay.text = numeroManual.ToString();
         }
     }
 
-    private void OnObjectRemoved(SelectExitEventArgs args)
+    // Desactivar manualmente el círculo
+    [ContextMenu("Desactivar Circulo")]
+    public void DesactivarCirculo()
     {
         if (desactivarCoroutine != null)
             StopCoroutine(desactivarCoroutine);
-
-        desactivarCoroutine = StartCoroutine(EsperarAntesDeOcultar());
-    }
-
-    private IEnumerator EsperarAntesDeOcultar()
-    {
-        yield return new WaitForSeconds(tiempoAntesDeOcultar);
 
         estaActivado = false;
 
@@ -69,5 +84,13 @@ public class SocketSpriteColorYNumero : MonoBehaviour
 
         if (textDisplay != null)
             textDisplay.text = "";
+    }
+
+    // Esperar antes de desactivar
+    private IEnumerator EsperarAntesDeOcultar()
+    {
+        yield return new WaitForSeconds(tiempoAntesDeOcultar);
+
+        DesactivarCirculo();
     }
 }
